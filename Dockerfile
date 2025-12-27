@@ -48,7 +48,7 @@ RUN pip install --no-cache-dir /workspace/models/research/
 # Fix TF 2.15 breaking changes in tf_slim
 RUN python -c "import site; print(site.getsitepackages()[0])" > /tmp/site_packages.txt && \
     SITE_PACKAGES=$(cat /tmp/site_packages.txt) && \
-    sed -i '1s/^/import tensorflow as tf\n\n/' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py && \
+    sed -i '/from __future__ import print_function/a import tensorflow as tf' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py && \
     sed -i 's/control_flow_ops\.case/tf.case/g' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py && \
     sed -i 's/control_flow_ops\.cond/tf.compat.v1.cond/g' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py
 
