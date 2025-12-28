@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python packages with specific versions
 RUN pip install --no-cache-dir \
-    tensorflow==2.15.0 \
+    tensorflow[and-cuda]==2.15.0 \
     protobuf==3.20.3 \
     tf-models-official==2.15.0 \
     gdown \
