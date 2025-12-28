@@ -16,9 +16,9 @@ print("="*80)
 print(f"Python version: {sys.version}")
 
 # TRAINING PARAMETERS!
-num_steps = 40000
-checkpoint_every = 2000
-batch_size = 16
+num_steps = 60000
+checkpoint_every = 2500
+batch_size = 64
 
 # Set paths for Docker environment
 HOMEFOLDER = '/workspace/'
