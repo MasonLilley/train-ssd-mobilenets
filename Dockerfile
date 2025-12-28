@@ -73,8 +73,16 @@ RUN python -c "import site; print(site.getsitepackages()[0])" > /tmp/site_packag
     sed -i 's/control_flow_ops\.cond/tf.compat.v1.cond/g' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py
 
 # Install Coral EdgeTPU Compiler
-RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
+# RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+#     echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
+#     apt-get update && \
+#     apt-get install -y edgetpu-compiler && \
+#     rm -rf /var/lib/apt/lists/*
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+      | gpg --dearmor -o /etc/apt/keyrings/coral.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/coral.gpg] https://packages.cloud.google.com/apt coral-edgetpu-stable main" \
+      | tee /etc/apt/sources.list.d/coral-edgetpu.list && \
     apt-get update && \
     apt-get install -y edgetpu-compiler && \
     rm -rf /var/lib/apt/lists/*
