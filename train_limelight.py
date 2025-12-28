@@ -15,6 +15,11 @@ print("LIMELIGHT NEURAL DETECTOR TRAINING - DOCKER ENVIRONMENT")
 print("="*80)
 print(f"Python version: {sys.version}")
 
+# TRAINING PARAMETERS!
+num_steps = 40000
+checkpoint_every = 2000
+batch_size = 16
+
 # Set paths for Docker environment
 HOMEFOLDER = '/workspace/'
 FINALOUTPUTFOLDER = '/workspace/final_output'
@@ -192,11 +197,6 @@ if config_result != 0:
 print("✓ Downloaded")
 
 os.chdir(HOMEFOLDER)
-
-# Set training parameters
-num_steps = 40000
-checkpoint_every = 2000
-batch_size = 16
 
 print(f"\n✓ Training parameters:")
 print(f"  Total steps: {num_steps}")
