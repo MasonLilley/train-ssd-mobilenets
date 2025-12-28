@@ -55,15 +55,21 @@ print("="*80)
 print("DATASET EXTRACTION")
 print("="*80)
 
+# Create a dedicated directory for the dataset
+DATASET_DIR = f'{HOMEFOLDER}dataset/'
+if os.path.exists(DATASET_DIR):
+    shutil.rmtree(DATASET_DIR)
+os.makedirs(DATASET_DIR, exist_ok=True)
+
 print(f"Extracting {DATASET_PATH}...")
-extract_result = os.system(f'unzip -q {DATASET_PATH} -d {HOMEFOLDER}')
+extract_result = os.system(f'unzip -q {DATASET_PATH} -d {DATASET_DIR}')
 if extract_result != 0:
     print("\n" + "!"*80)
     print("ERROR: Failed to extract dataset!")
     print(f"Please verify {DATASET_PATH} is a valid zip file")
     print("!"*80)
     sys.exit(1)
-print("✓ Dataset extracted\n")
+print(f"✓ Dataset extracted to {DATASET_DIR}\n")
 
 # Auto-detect tfrecord files
 import fnmatch
@@ -94,8 +100,10 @@ def find_tfrecord_files(directory):
     
     return train_record, val_record, label_map
 
-train_record_fname, val_record_fname, label_map_pbtxt_fname = find_tfrecord_files(f'{HOMEFOLDER}data/')
+# Search in both HOMEFOLDER and HOMEFOLDER/data for flexibility
+train_record_fname, val_record_fname, label_map_pbtxt_fname = find_tfrecord_files(DATASET_DIR)
 
+# If not found, error out with helpful message
 if not train_record_fname or not val_record_fname or not label_map_pbtxt_fname:
     print("\n" + "!"*80)
     print("ERROR: Could not find required dataset files!")
