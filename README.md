@@ -6,7 +6,7 @@
 
 3. Put your TFRecord as a zip file named ```dataset.zip``` under ```train-ssd-mobilenets/data/dataset.zip```.
 
-3. In this repo, run ```docker build -t limelight-tflite .```
+3. In this repo, run ```docker build --no-cache -t limelight-tflite .```
 
 4. Once the docker container builds, start training with ```docker run -it --gpus all -p 6006:6006 -v "${PWD}/data:/workspace/data" -v "${PWD}/train_limelight.py:/workspace/train_limelight.py" limelight-tflite python /workspace/train_limelight.py```
 
