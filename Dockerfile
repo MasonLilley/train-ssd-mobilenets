@@ -14,11 +14,17 @@ RUN apt-get update && apt-get install -y \
     sudo \
     libgl1 \
     libglib2.0-0 \
+    procps \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python packages with specific versions
+# Install TensorFlow with GPU support
 RUN pip install --no-cache-dir \
-    tensorflow[and-cuda]==2.15.0 \
+    tensorflow==2.15.0 \
+    nvidia-cudnn-cu12==8.9.2.26 \
+    nvidia-cublas-cu12==12.1.3.1 \
+    nvidia-cuda-nvrtc-cu12==12.1.105 \
+    nvidia-cuda-runtime-cu12==12.1.105 \
     protobuf==3.20.3 \
     tf-models-official==2.15.0 \
     gdown \
