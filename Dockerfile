@@ -1,10 +1,19 @@
-FROM python:3.11-slim
+# USE NVIDIA BASE IMAGE (Includes CUDA 12.1 and cuDNN 8)
+# This is required for TF to find the GPU libraries correctly
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 
 # Set working directory
 WORKDIR /workspace
 
-# Install system dependencies
+# Avoid interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install System Dependencies + Python 3.10
+# (Ubuntu 22.04 comes with Python 3.10, which works perfectly with TF 2.15)
 RUN apt-get update && apt-get install -y \
+    python3.10 \
+    python3-pip \
+    python3.10-dev \
     git \
     wget \
     curl \
@@ -17,14 +26,17 @@ RUN apt-get update && apt-get install -y \
     procps \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python packages with specific versions
-# Install TensorFlow with GPU support
+# Symlink python3 to python (so 'python' command works)
+RUN ln -s /usr/bin/python3.10 /usr/bin/python
+
+# Upgrade pip
+RUN python -m pip install --upgrade pip
+
+# Install Python packages
+# NOTE: We removed 'nvidia-*' packages because they are provided by the Base Image.
+# Installing them via pip causes conflicts/duplicate registration errors.
 RUN pip install --no-cache-dir \
     tensorflow==2.15.0 \
-    nvidia-cudnn-cu12==8.9.2.26 \
-    nvidia-cublas-cu12==12.1.3.1 \
-    nvidia-cuda-nvrtc-cu12==12.1.105 \
-    nvidia-cuda-runtime-cu12==12.1.105 \
     protobuf==3.20.3 \
     tf-models-official==2.15.0 \
     gdown \
@@ -77,5 +89,5 @@ RUN mkdir -p /workspace/training_progress /workspace/final_output
 # Expose Jupyter port
 EXPOSE 8888
 
-# Start Jupyter Lab by default
+# Start Jupyter Lab
 CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root", "--NotebookApp.token=''"]
