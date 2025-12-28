@@ -85,12 +85,16 @@ def find_tfrecord_files(directory):
         elif '/valid/' in tfrecord_file:
             val_record = tfrecord_file
     
+    # Find label map - prioritize train/valid/test folders over models folder
     for label_file in find_files(directory, '*_label_map.pbtxt'):
-        label_map = label_file
+        # Skip the MSCOCO label map in the models folder
+        if '/models/research/object_detection/data/' not in label_file:
+            label_map = label_file
+            break
     
     return train_record, val_record, label_map
 
-train_record_fname, val_record_fname, label_map_pbtxt_fname = find_tfrecord_files(HOMEFOLDER)
+train_record_fname, val_record_fname, label_map_pbtxt_fname = find_tfrecord_files(f'{HOMEFOLDER}data/')
 
 if not train_record_fname or not val_record_fname or not label_map_pbtxt_fname:
     print("\n" + "!"*80)
@@ -274,17 +278,17 @@ try:
     with open(f'{HOMEFOLDER}pipeline_file.config', 'w') as f:
         # Set fine_tune_checkpoint path
         s = re.sub('fine_tune_checkpoint: ".*?"',
-                f'fine_tune_checkpoint: "{fine_tune_checkpoint}"', s)
+                   f'fine_tune_checkpoint: "{fine_tune_checkpoint}"', s)
         
         # Set tfrecord files for train and test datasets
         s = re.sub('(input_path: ".*?)(PATH_TO_BE_CONFIGURED/train)(.*?")', 
-                f'input_path: "{train_record_fname}"', s)
+                   f'input_path: "{train_record_fname}"', s)
         s = re.sub('(input_path: ".*?)(PATH_TO_BE_CONFIGURED/val)(.*?")', 
-                f'input_path: "{val_record_fname}"', s)
+                   f'input_path: "{val_record_fname}"', s)
         
         # Set label_map_path
         s = re.sub('label_map_path: ".*?"', 
-                f'label_map_path: "{label_map_pbtxt_fname}"', s)
+                   f'label_map_path: "{label_map_pbtxt_fname}"', s)
         
         # Set batch_size
         s = re.sub('batch_size: [0-9]+', f'batch_size: {batch_size}', s)
@@ -297,7 +301,7 @@ try:
         
         # Change fine-tune checkpoint type from "classification" to "detection"
         s = re.sub('fine_tune_checkpoint_type: "classification"', 
-                'fine_tune_checkpoint_type: "detection"', s)
+                   'fine_tune_checkpoint_type: "detection"', s)
         
         # Adjust learning rate for ssd-mobilenet-v2
         if chosen_model == 'ssd-mobilenet-v2':
