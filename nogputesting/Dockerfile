@@ -71,8 +71,7 @@ RUN python -c "import site; print(site.getsitepackages()[0])" > /tmp/site_packag
     sed -i 's/control_flow_ops\.case/tf.case/g' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py && \
     sed -i 's/control_flow_ops\.cond/tf.compat.v1.cond/g' ${SITE_PACKAGES}/tf_slim/data/tfexample_decoder.py
 
-# Install Coral EdgeTPU Compiler
-# Unlike Mac M1, Windows/Intel Docker CAN run this compiler.
+# Install Coral EdgeTPU Compiler (prob need to replace?)
 RUN mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg \
       | gpg --dearmor -o /etc/apt/keyrings/coral.gpg && \
