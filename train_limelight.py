@@ -139,7 +139,7 @@ chosen_model = 'ssd-mobilenet-v2'
 MODELS_CONFIG = {
     'ssd-mobilenet-v2': {
         'model_name': 'ssd_mobilenet_v2_640x640_coco17_tpu-8',
-        'base_pipeline_file': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8.config',
+        'base_pipeline_file': 'limelight_ssd_mobilenet_v2_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz',
     },
 }
@@ -183,18 +183,30 @@ except Exception as e:
     print("!"*80)
     sys.exit(1)
 
-# Download training configuration
-download_config = f'https://downloads.limelightvision.io/models/{base_pipeline_file}'
-print(f"Downloading base configuration...")
-config_result = os.system(f'wget -q {download_config}')
-if config_result != 0:
-    print("\n" + "!"*80)
-    print("ERROR: Failed to download configuration file!")
-    print(f"URL: {download_config}")
-    print("Please check your internet connection")
-    print("!"*80)
-    sys.exit(1)
-print("✓ Downloaded")
+# Check for local config file first, otherwise download
+# Look for any .config file in the data directory
+import glob
+local_config_files = glob.glob('/workspace/data/*.config')
+if local_config_files:
+    local_config_path = local_config_files[0]
+    print(f"Using local configuration file: {local_config_path}")
+    # Copy it to the mymodel directory with the expected name
+    import shutil
+    shutil.copy(local_config_path, f'{mymodel_dir}{base_pipeline_file}')
+    print("✓ Copied local config")
+else:
+    # Download training configuration from Limelight
+    download_config = f'https://downloads.limelightvision.io/models/{base_pipeline_file}'
+    print(f"Downloading base configuration from Limelight...")
+    config_result = os.system(f'wget -q {download_config}')
+    if config_result != 0:
+        print("\n" + "!"*80)
+        print("ERROR: Failed to download configuration file!")
+        print(f"URL: {download_config}")
+        print("Please check your internet connection")
+        print("!"*80)
+        sys.exit(1)
+    print("✓ Downloaded")
 
 os.chdir(HOMEFOLDER)
 
