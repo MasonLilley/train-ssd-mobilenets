@@ -138,7 +138,7 @@ print("="*80)
 chosen_model = 'ssd-mobilenet-v2'
 MODELS_CONFIG = {
     'ssd-mobilenet-v2': {
-        'model_name': 'ssd_mobilenet_v2_320x320_coco17_tpu-8',
+        'model_name': 'ssd_mobilenet_v2_640x640_coco17_tpu-8',
         'base_pipeline_file': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8.config',
         'pretrained_checkpoint': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz',
     },
