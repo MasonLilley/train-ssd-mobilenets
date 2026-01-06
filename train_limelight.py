@@ -141,6 +141,7 @@ MODELS_CONFIG = {
         'model_name': 'ssd_mobilenet_v2_640x640_coco17_tpu-8',
         'base_pipeline_file': 'limelight_ssd_mobilenet_v2_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz',
+        'rename_extracted_dir': 'ssd_mobilenet_v2_640x640_coco17_tpu-8',  # Rename after extraction
     },
 }
 
@@ -176,6 +177,19 @@ try:
     tar.extractall()
     tar.close()
     print("✓ Extracted")
+    
+    # Rename the extracted directory if needed (320x320 -> 640x640)
+    if 'rename_extracted_dir' in MODELS_CONFIG[chosen_model]:
+        # Find the extracted directory (should be the 320x320 version)
+        extracted_name = pretrained_checkpoint.replace('.tar.gz', '')
+        target_name = MODELS_CONFIG[chosen_model]['rename_extracted_dir']
+        
+        if os.path.exists(extracted_name) and extracted_name != target_name:
+            if os.path.exists(target_name):
+                shutil.rmtree(target_name)
+            os.rename(extracted_name, target_name)
+            print(f"✓ Renamed checkpoint directory: {extracted_name} -> {target_name}")
+            
 except Exception as e:
     print("\n" + "!"*80)
     print("ERROR: Failed to extract pre-trained weights!")
