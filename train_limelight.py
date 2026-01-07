@@ -138,10 +138,10 @@ print("="*80)
 chosen_model = 'ssd-mobilenet-v2'
 MODELS_CONFIG = {
     'ssd-mobilenet-v2': {
-        'model_name': 'ssd_mobilenet_v2_640x640_coco17_tpu-8',
+        'model_name': 'limelight_ssd_mobilenet_v2_640x640_coco17_tpu-8',
         'base_pipeline_file': 'limelight_ssd_mobilenet_v2_640x640_coco17_tpu-8.config',
         'pretrained_checkpoint': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz',
-        'rename_extracted_dir': 'ssd_mobilenet_v2_640x640_coco17_tpu-8',  # Rename after extraction
+        'extracted_dir_name': 'limelight_ssd_mobilenet_v2_320x320_coco17_tpu-8',  # What gets extracted
     },
 }
 
@@ -179,10 +179,9 @@ try:
     print("✓ Extracted")
     
     # Rename the extracted directory if needed (320x320 -> 640x640)
-    if 'rename_extracted_dir' in MODELS_CONFIG[chosen_model]:
-        # Find the extracted directory (should be the 320x320 version)
-        extracted_name = pretrained_checkpoint.replace('.tar.gz', '')
-        target_name = MODELS_CONFIG[chosen_model]['rename_extracted_dir']
+    if 'extracted_dir_name' in MODELS_CONFIG[chosen_model]:
+        extracted_name = MODELS_CONFIG[chosen_model]['extracted_dir_name']
+        target_name = model_name
         
         if os.path.exists(extracted_name) and extracted_name != target_name:
             if os.path.exists(target_name):
